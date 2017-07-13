@@ -1,0 +1,6 @@
+call:
+  zookeeper:
+    rootPath: io.vertx
+    hosts: 127.0.0.1:2181
+server:
+  port: 80

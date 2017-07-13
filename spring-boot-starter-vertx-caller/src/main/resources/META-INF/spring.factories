@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=org.cuber.call.starter.CallAutoConfiguration
+org.springframework.context.ApplicationContextInitializer=org.cuber.call.initializer.SpringCallInitializer

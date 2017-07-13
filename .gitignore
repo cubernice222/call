@@ -1,0 +1,10 @@
+.classpath
+target/
+.project
+*.bak
+.settings/
+.metadata/
+*.iml
+*.vertx/
+.idea/
+*.log

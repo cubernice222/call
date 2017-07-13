@@ -1,0 +1,5 @@
+call:
+  application:
+    name: @call.application.name@
+    version: @project.version@
+  isCallee: Y
