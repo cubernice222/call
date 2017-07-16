@@ -6,6 +6,7 @@ import io.vertx.core.Vertx;
 import org.cuber.call.CallConstant;
 import org.cuber.call.CallDefine;
 import org.cuber.call.callee.annotation.Callee;
+import org.cuber.call.caller.annotation.Caller;
 import org.cuber.call.utils.VertxUtils;
 import org.cuber.call.vertx.holder.AbstractVertxHolder;
 import org.springframework.beans.BeansException;
@@ -39,12 +40,12 @@ public class CalleeFactory implements BeanDefinitionRegistryPostProcessor,Enviro
             callees.forEach((k,v)->{
                 Class[] interfaces = v.getClass().getInterfaces();
                 Optional<Class> interfaceFirst =  Arrays.stream(interfaces).filter(InterfaceClass->{
-                    Callee callee = (Callee) InterfaceClass.getAnnotation(Callee.class);
-                    return callee != null;
+                    Caller caller = (Caller) InterfaceClass.getAnnotation(Caller.class);
+                    return caller != null;
                 }).findFirst();
                 Class handlerClass = v.getClass();
                 if(null != interfaceFirst && interfaceFirst.isPresent()){
-                    handlerClass  = interfaceFirst.getClass();
+                    handlerClass  = interfaceFirst.get();
                 }
                 Vertx vertx = abstractClusteringVerHolder.getVertxByAppNameAndVersion(callDefine.getCallAppName(),callDefine.getVersion());
                 Method[] methods = handlerClass.getDeclaredMethods();

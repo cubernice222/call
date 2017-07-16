@@ -46,6 +46,12 @@
       <artifactId>spring-boot-starter-vertx-caller</artifactId>
       <version>1.5.4.RELEASE</version>
     </dependency>
+
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>22.0</version>
+    </dependency>
   </dependencies>
   <build>
     <finalName>callee-demo</finalName>

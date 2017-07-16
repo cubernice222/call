@@ -46,9 +46,10 @@ public abstract class AbstractVertxHolder {
     public <T> T getProxyObj(Class<T> interfaceClass,String appName,String version){
         if(!havingProxyObj.contains(interfaceClass)){
             Vertx vertx = getVertxByAppNameAndVersion(appName,version);
+            CallerProxyVerticle verticle = havingVerticeProxys.get(vertx);
             T t = (T) Proxy.newProxyInstance(interfaceClass.getClassLoader(),
                     new Class[]{interfaceClass},
-                    havingVerticeProxys.get(vertx));
+                    verticle);
             havingProxyObj.putIfAbsent(interfaceClass, t);
         }
         return (T)havingProxyObj.get(interfaceClass);

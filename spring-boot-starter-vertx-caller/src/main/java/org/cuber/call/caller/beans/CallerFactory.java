@@ -1,6 +1,5 @@
 package org.cuber.call.caller.beans;
 
-import com.google.common.base.Strings;
 import org.cuber.call.CallConstant;
 import org.cuber.call.caller.annotation.Caller;
 import org.cuber.call.caller.define.CallerDefine;

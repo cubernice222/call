@@ -1,8 +1,12 @@
 package org.cuber.call.utils;
 
-import com.alibaba.fastjson.JSON;
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 import io.vertx.core.Vertx;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.EventBus;
+import org.cuber.call.caller.proxy.CallerProxyVerticle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,19 +22,26 @@ public class VertxUtils {
 
     public static void createConsumer(Method method, Vertx vertx, Object springBean) {
         EventBus eventBus = vertx.eventBus();
-        String address = MethodUtils.getMethodSignature(method);
+        String address =  MethodUtils.getMethodSignature(method);
         eventBus.consumer(address, message -> {
-            String receiveJsonStr = (String) message.body();
+            Buffer buffer = (Buffer)message.body();
+            Kryo kryo = CallerProxyVerticle.getKryo();
+            Input input = new Input(buffer.getBytes());
+            Object[] objects = kryo.readObjectOrNull(input,Object[].class);
             long startTime = System.currentTimeMillis();
-            String addressLocal = message.address();
-            log.info(" [{}] receive message [{}] from [{}]", address,receiveJsonStr, addressLocal);
-            Object[] objects = MethodUtils.decoderMethodParamValue4Json(method, receiveJsonStr);
+            Output output = null;
             try {
                 Object result = method.invoke(springBean, objects);
-                message.reply(JSON.toJSONString(result));
+                output = new Output(1024,-1);
+                kryo.writeObjectOrNull(output,result,method.getReturnType());
+                output.flush();
+                Buffer buffer1 = Buffer.buffer(output.toBytes());
+                message.reply(buffer1);
             } catch (Exception e) {
                 message.fail(1, e.getMessage());
             } finally {
+                output.close();
+                input.close();
                 long endTime = System.currentTimeMillis();
                 log.info(" it's take [{}] ms", endTime - startTime);
             }
