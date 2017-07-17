@@ -28,7 +28,7 @@ public class VertxUtils {
             Kryo kryo = CallerProxyVerticle.getKryo();
             Input input = new Input(buffer.getBytes());
             Object[] objects = kryo.readObjectOrNull(input,Object[].class);
-            long startTime = System.currentTimeMillis();
+            long startTime = System.nanoTime();
             Output output = null;
             try {
                 Object result = method.invoke(springBean, objects);
@@ -42,7 +42,7 @@ public class VertxUtils {
             } finally {
                 output.close();
                 input.close();
-                long endTime = System.currentTimeMillis();
+                long endTime = System.nanoTime();
                 log.info(" it's take [{}] ms", endTime - startTime);
             }
         });
